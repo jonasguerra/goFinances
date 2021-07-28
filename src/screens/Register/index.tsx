@@ -36,6 +36,7 @@ export function Register() {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(scheme),
@@ -72,6 +73,13 @@ export function Register() {
       const currentData = collection ? JSON.parse(collection) : [];
       const allData = [...currentData, newTransaction];
       await AsyncStorage.setItem(dataKey, JSON.stringify(allData));
+
+      reset();
+      setTransactionType('');
+      setCategory({
+        key: 'category',
+        name: 'category',
+      });
     } catch (error) {
       console.log(error);
       Alert.alert('Erro ao salvar transação');
