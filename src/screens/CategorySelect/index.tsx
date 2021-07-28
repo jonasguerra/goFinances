@@ -17,7 +17,7 @@ interface Props {
 
 export function CategorySelect({ category, setCategory, closeSelectCategory }: Props) {
   function handleCategorySelect(item: Category) {
-    setCategory(category);
+    setCategory(item);
   }
 
   return (

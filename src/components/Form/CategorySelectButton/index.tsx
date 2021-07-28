@@ -1,5 +1,5 @@
 import React from 'react';
-import { Category, Icon, TouchableOpacity } from './styles';
+import { Category, Container, Icon } from './styles';
 
 interface Props {
   title: string;
@@ -8,9 +8,9 @@ interface Props {
 
 export function CategorySelectButton({ title, onPress }: Props) {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <Container onPress={onPress}>
       <Category>{title}</Category>
       <Icon name="chevron-down"></Icon>
-    </TouchableOpacity>
+    </Container>
   );
 }
