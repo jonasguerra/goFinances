@@ -1,17 +1,22 @@
 import React from 'react';
-import { Amount, Category, CategoryIcon, CategoryName, Container, Date, Footer, Title } from './styles';
-
-interface Category {
-  name: string;
-  icon: string;
-}
+import { categories } from '../../utils/categories';
+import {
+  Amount,
+  Category,
+  CategoryIcon,
+  CategoryName,
+  Container,
+  Date,
+  Footer,
+  Title,
+} from './styles';
 
 export interface TransactionCardProps {
   type: 'positive' | 'negative';
-  title: string;
+  name: string;
   amount: string;
   date: string;
-  category: Category;
+  category: string;
 }
 
 interface Props {
@@ -19,9 +24,12 @@ interface Props {
 }
 
 export function TransactionCard({ data }: Props) {
+  //utilizado para pegar a primeira posição da lista
+  const [category] = categories.filter((item) => item.key === data.category);
+
   return (
     <Container>
-      <Title>{data.title}</Title>
+      <Title>{data.name}</Title>
 
       <Amount type={data.type}>
         {data.type === 'negative' && '- '}
@@ -30,8 +38,8 @@ export function TransactionCard({ data }: Props) {
 
       <Footer>
         <Category>
-          <CategoryIcon name={data.category.icon} />
-          <CategoryName>{data.category.name}</CategoryName>
+          <CategoryIcon name={category.icon} />
+          <CategoryName>{category.name}</CategoryName>
         </Category>
         <Date>13/04/2021</Date>
       </Footer>

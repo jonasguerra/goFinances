@@ -1,4 +1,6 @@
-import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import { HighlightCard } from '../../components/HighLightCard';
 import { TransactionCard, TransactionCardProps } from '../../components/TransactionCard';
 import {
@@ -23,48 +25,60 @@ export interface DataListProps extends TransactionCardProps {
 }
 
 export const Dashboard = () => {
-  const data: DataListProps[] = [
-    {
-      id: '1',
-      type: 'positive',
-      title: 'Desenvolvimento de site',
-      amount: '12.000,50',
-      date: '12/12/2012',
-      category: {
-        name: 'Vendas',
-        icon: 'dollar-sign',
-      },
-    },
-    {
-      id: '2',
-      type: 'negative',
-      title: 'Desenvolvimento de site',
-      amount: '12,50',
-      date: '12/12/2012',
-      category: {
-        name: 'Alimentação',
-        icon: 'coffee',
-      },
-    },
-    {
-      id: '3',
-      type: 'negative',
-      title: 'Desenvolvimento de site',
-      amount: '1200,50',
-      date: '12/12/2012',
-      category: {
-        name: 'Casa',
-        icon: 'shopping-bag',
-      },
-    },
-  ];
+  const [data, setData] = useState<DataListProps[]>([]);
+
+  async function loadTransactionsData() {
+    const dataKey = '@gofinances/transations';
+    const response = await AsyncStorage.getItem(dataKey);
+    const transactions = response ? JSON.parse(response) : [];
+
+    const formattedTransactions: DataListProps[] = transactions.map(
+      (item: DataListProps) => {
+        const amount = Number(item.amount).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        });
+
+        const date = Intl.DateTimeFormat('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit',
+        }).format(new Date(item.date));
+
+        return {
+          id: item.id,
+          name: item.name,
+          amount,
+          date,
+          type: item.type,
+          category: item.category,
+        };
+      }
+    );
+
+    console.log(formattedTransactions);
+
+    setData(formattedTransactions);
+  }
+
+  useEffect(() => {
+    loadTransactionsData();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadTransactionsData();
+    }, [])
+  );
 
   return (
     <Container>
       <Header>
         <UserWrapper>
           <UserInfo>
-            <Photo source={{ uri: 'https://avatars.githubusercontent.com/u/27323498?v=4' }} />
+            <Photo
+              source={{ uri: 'https://avatars.githubusercontent.com/u/27323498?v=4' }}
+            />
             <User>
               <UserGreeting>Olá,</UserGreeting>
               <UserName>Jonas</UserName>
