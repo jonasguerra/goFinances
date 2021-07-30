@@ -22,7 +22,8 @@ const scheme = Yup.object().shape({
   name: Yup.string().required('Nome é obrigatório'),
   amount: Yup.number()
     .typeError('Informe um valor numérico')
-    .positive('O valor não pode ser negativo'),
+    .positive('O valor não pode ser negativo')
+    .required('O valor deve ser informado'),
 });
 
 export function Register() {
@@ -72,7 +73,7 @@ export function Register() {
     };
 
     try {
-      const dataKey = '@gofinances/transations';
+      const dataKey = '@gofinances:transactions';
 
       const collection = await AsyncStorage.getItem(dataKey);
       const currentData = collection ? JSON.parse(collection) : [];
@@ -132,10 +133,7 @@ export function Register() {
               />
             </TransactionsType>
 
-            <CategorySelectButton
-              title={category.name}
-              onPress={handleOpenSelectCategoryModal}
-            />
+            <CategorySelectButton title={category.name} onPress={handleOpenSelectCategoryModal} />
           </Fields>
           <Button title="Enviar" onPress={handleSubmit(onsubmit)} />
         </Form>

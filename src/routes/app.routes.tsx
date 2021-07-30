@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 import { useTheme } from 'styled-components';
 import { Dashboard } from '../screens/Dashboard';
 import { Register } from '../screens/Register';
+import { Resume } from '../screens/Resume';
 const { Navigator, Screen } = createBottomTabNavigator();
 
 export function AppRoutes() {
@@ -26,18 +27,28 @@ export function AppRoutes() {
         name="Listagem"
         component={Dashboard}
         options={{
-          tabBarIcon: ({ size, color }) => <MaterialIcons name="format-list-bulleted" size={size} color={color} />,
+          tabBarIcon: ({ size, color }) => (
+            <MaterialIcons name="format-list-bulleted" size={size} color={color} />
+          ),
         }}
       />
       <Screen
         name="Cadastrar"
         component={Register}
-        options={{ tabBarIcon: ({ size, color }) => <MaterialIcons name="attach-money" size={size} color={color} /> }}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <MaterialIcons name="attach-money" size={size} color={color} />
+          ),
+        }}
       />
       <Screen
         name="Resumo"
-        component={Register}
-        options={{ tabBarIcon: ({ size, color }) => <MaterialIcons name="pie-chart" size={size} color={color} /> }}
+        component={Resume}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <MaterialIcons name="pie-chart" size={size} color={color} />
+          ),
+        }}
       />
     </Navigator>
   );
