@@ -7,7 +7,8 @@ interface CardProps {
 }
 
 export const Container = styled.View<CardProps>`
-  background-color: ${({ theme, type }) => (type === 'total' ? theme.colors.secondary : theme.colors.shape)};
+  background-color: ${({ theme, type }) =>
+    type === 'total' ? theme.colors.secondary : theme.colors.shape};
 
   width: ${RFValue(300)}px;
   border-radius: 5px;
@@ -42,7 +43,7 @@ export const Icon = styled(Feather)<CardProps>`
     css`
       color: ${({ theme }) => theme.colors.attention};
     `}
-    ${(props) =>
+  ${(props) =>
     props.type === 'total' &&
     css`
       color: ${({ theme }) => theme.colors.shape};
