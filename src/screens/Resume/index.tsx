@@ -9,6 +9,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from 'styled-components';
 import { VictoryPie } from 'victory-native';
 import { HistoryCard } from '../../components/HistoryCard';
+import { useAuth } from '../../hooks/auth';
 import { categories } from '../../utils/categories';
 import {
   ChartContainer,
@@ -43,8 +44,11 @@ interface CategorySum {
 export function Resume() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [totalByCategories, setTotalByCategories] = useState<CategorySum[]>([]);
+  const [totalByCategories, setTotalByCategories] = useState<
+    CategorySum[]
+  >([]);
   const theme = useTheme();
+  const { user } = useAuth();
 
   function handleDateChange(action: 'previous' | 'next') {
     if (action === 'next') {
@@ -56,20 +60,25 @@ export function Resume() {
 
   async function loadData() {
     setIsLoading(true);
-    const dataKey = '@gofinances:transactions';
+    const dataKey = `@gofinances:transactions_user:${user.id}`;
     const response = await AsyncStorage.getItem(dataKey);
     const formattedResponse = response ? JSON.parse(response) : [];
 
     const expenses = formattedResponse.filter(
       (expense: TransactionData) =>
         expense.type === 'negative' &&
-        new Date(expense.date).getMonth() === selectedDate.getMonth() &&
-        new Date(expense.date).getFullYear() === selectedDate.getFullYear()
+        new Date(expense.date).getMonth() ===
+          selectedDate.getMonth() &&
+        new Date(expense.date).getFullYear() ===
+          selectedDate.getFullYear()
     );
 
-    const expensesTotal = expenses.reduce((acumullator: number, expense: TransactionData) => {
-      return acumullator + Number(expense.amount);
-    }, 0);
+    const expensesTotal = expenses.reduce(
+      (acumullator: number, expense: TransactionData) => {
+        return acumullator + Number(expense.amount);
+      },
+      0
+    );
 
     const totalByCategory: CategorySum[] = [];
 
@@ -88,7 +97,10 @@ export function Resume() {
           currency: 'BRL',
         });
 
-        const percent = `${((categorySum / expensesTotal) * 100).toFixed(0)}%`;
+        const percent = `${(
+          (categorySum / expensesTotal) *
+          100
+        ).toFixed(0)}%`;
 
         totalByCategory.push({
           key: category.key,
@@ -118,7 +130,10 @@ export function Resume() {
       </Header>
       {isLoading ? (
         <LoadingContainer>
-          <ActivityIndicator color={theme.colors.primary} size="large" />
+          <ActivityIndicator
+            color={theme.colors.primary}
+            size="large"
+          />
         </LoadingContainer>
       ) : (
         <Content
@@ -129,13 +144,19 @@ export function Resume() {
           }}
         >
           <MonthSelect>
-            <MonthSelectButton onPress={() => handleDateChange('previous')}>
+            <MonthSelectButton
+              onPress={() => handleDateChange('previous')}
+            >
               <MonthSelectIcon name="chevron-left" />
             </MonthSelectButton>
 
-            <Month>{format(selectedDate, 'MMMM, yyyy', { locale: ptBR })}</Month>
+            <Month>
+              {format(selectedDate, 'MMMM, yyyy', { locale: ptBR })}
+            </Month>
 
-            <MonthSelectButton onPress={() => handleDateChange('next')}>
+            <MonthSelectButton
+              onPress={() => handleDateChange('next')}
+            >
               <MonthSelectIcon name="chevron-right" />
             </MonthSelectButton>
           </MonthSelect>
@@ -145,9 +166,15 @@ export function Resume() {
               data={totalByCategories}
               x="percent"
               y="total"
-              colorScale={totalByCategories.map((category) => category.color)}
+              colorScale={totalByCategories.map(
+                (category) => category.color
+              )}
               style={{
-                labels: { fontSize: RFValue(18), fontWeight: 'bold', fill: theme.colors.shape },
+                labels: {
+                  fontSize: RFValue(18),
+                  fontWeight: 'bold',
+                  fill: theme.colors.shape,
+                },
               }}
               labelRadius={50}
             />

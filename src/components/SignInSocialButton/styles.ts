@@ -10,7 +10,7 @@ export const Button = styled(RectButton)`
   align-items: center;
   flex-direction: row;
 
-  margin-bottom: 16;
+  margin-bottom: 16px;
 `;
 
 export const ImageContainer = styled.View`

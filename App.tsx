@@ -1,5 +1,9 @@
-import { Poppins_400Regular, Poppins_500Medium, Poppins_700Bold, useFonts } from '@expo-google-fonts/poppins';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_700Bold,
+  useFonts,
+} from '@expo-google-fonts/poppins';
 import AppLoading from 'expo-app-loading';
 import 'intl';
 import 'intl/locale-data/jsonp/pt-BR';
@@ -8,7 +12,8 @@ import { StatusBar } from 'react-native';
 import 'react-native-gesture-handler';
 import { ThemeProvider } from 'styled-components/native';
 import theme from './src/global/styles/theme';
-import { SignIn } from './src/screens/SignIn';
+import { AuthProvider } from './src/hooks/auth';
+import { Routes } from './src/routes';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -17,16 +22,21 @@ export default function App() {
     Poppins_700Bold,
   });
 
+  //se as fontes foram carregadas
   if (!fontsLoaded) {
     return <AppLoading />;
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <NavigationContainer>
-        <StatusBar barStyle="light-content" />
-        <SignIn />
-      </NavigationContainer>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
