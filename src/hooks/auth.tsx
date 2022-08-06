@@ -1,13 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import * as AuthSession from 'expo-auth-session';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as AppleAuthentication from "expo-apple-authentication";
+import * as AuthSession from "expo-auth-session";
 import React, {
   createContext,
   ReactNode,
   useContext,
   useEffect,
   useState,
-} from 'react';
+} from "react";
 
 const { CLIENT_ID } = process.env;
 const { REDIRECT_URI } = process.env;
@@ -39,22 +39,17 @@ interface AuthContextProps {
   children: ReactNode;
 }
 
-interface AuthContextProps {
-  children: ReactNode;
-}
-
 export const AuthContext = createContext({} as AuthContextData);
 
 function AuthProvider({ children }: AuthContextProps) {
   const [user, setUser] = useState({} as User);
   const [userStorageLoading, setUserStorageLoading] = useState(true);
-  const userStorageKey = '@gofinances:user';
+  const userStorageKey = "@gofinances:user";
 
   async function signInWithGoogle() {
     try {
-      const OAUTH2_ENDPOINT =
-        'https://accounts.google.com/o/oauth2/v2/auth';
-      const SCOPE = encodeURI('profile email');
+      const OAUTH2_ENDPOINT = "https://accounts.google.com/o/oauth2/v2/auth";
+      const SCOPE = encodeURI("profile email");
 
       const authUrl = `${OAUTH2_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
 
@@ -62,7 +57,7 @@ function AuthProvider({ children }: AuthContextProps) {
         authUrl,
       })) as AuthorizationResponse;
 
-      if (type === 'success') {
+      if (type === "success") {
         const response = await fetch(
           `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${params.access_token}`
         );
@@ -78,10 +73,7 @@ function AuthProvider({ children }: AuthContextProps) {
         };
 
         setUser(userLogged);
-        await AsyncStorage.setItem(
-          userStorageKey,
-          JSON.stringify(userLogged)
-        );
+        await AsyncStorage.setItem(userStorageKey, JSON.stringify(userLogged));
       }
     } catch (error) {
       throw new Error(String(error));
@@ -109,10 +101,7 @@ function AuthProvider({ children }: AuthContextProps) {
         };
 
         setUser(userLogged);
-        await AsyncStorage.setItem(
-          userStorageKey,
-          JSON.stringify(userLogged)
-        );
+        await AsyncStorage.setItem(userStorageKey, JSON.stringify(userLogged));
       }
     } catch (error) {
       throw new Error(String(error));
